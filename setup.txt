@@ -1,0 +1,228 @@
+# this file breaks down the setup process step by step
+
+1. npm init -y  #  initializing a JavaScript application
+# when these finished installing, npm created a node_modules directory and a package-lock.json file. 
+# node_modules is where Webpack’s actual code
+
+2. npm install --save-dev webpack webpack-cli # install Webpack, 
+
+3. touch webpack.config.js # create webpack.config.js 
+
+4. npm install --save-dev html-webpack-plugin 
+
+5. npm install --save-dev style-loader css-loader
+
+6. npm install --save-dev html-loader
+
+7. npm install --save-dev webpack-dev-server and npm install --save-dev serve
+
+8. npm install -D tailwindcss@3.4.17 postcss autoprefixer  # stable version of tailwind
+
+9. npx tailwindcss init -p:  # tailwind configuration
+   Created Tailwind CSS config file: tailwind.config.js
+   Created PostCSS config file: postcss.config.js
+
+10. created folder Styles then cd inside/
+     touch tailwind.css # created tailwind.css files to handle styling using tailwind
+     then npm install --save-dev mini-css-extract-plugin
+
+     inside tailwind.css: 
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
+//there is an issue when a page is loaded tailwind gets applied later so i did this:
+11. npm install --save-dev mini-css-extract-plugin 
+
+12.  Update webpack.config.js
+Replace "style-loader" with MiniCssExtractPlugin.loader in your CSS rule, and add the plugin
+
+13. Remove duplicate devServer keys
+i got two devServer objects in the config — Webpack will only use the last one, 
+so my watchFiles from the first block is ignored. Merge them:
+devServer: {
+  static: path.resolve(__dirname, "dist"),
+  open: true,
+  hot: true,
+  watchFiles: ["src/**/*", "./src/weatherUi.html"],
+},
+
+14. npm install --save-dev @babel/core @babel/preset-env babel-loader
+# Install Babel and related packages at exact versions:
+     @babel/core: The core compiler.
+     @babel/preset-env: Transpiles ES6+ to ES5 based on your target browsers.
+     babel-loader: Integrates Babel with Webpack.
+
+     14. A. Create a Babel Configuration
+         # This tells Babel to transpile based on the environment, optionally targeting browsers specified 
+         # in the package.json's "browserslist" or default targets.
+         # Add a .babelrc or babel.config.json file in your project root:
+           {
+            "presets": [
+                ["@babel/preset-env", {
+                    "targets": "> 0.25%, not dead"
+                    }]
+                ]
+            }
+
+    14. B. Update webpack.config.js to use Babel loader
+    14. C. Add this rule to module.rules (near the top, before CSS loaders):
+        {
+        test: /\.m?js$/,
+        exclude: /node_modules/,
+        use: {
+            loader: "babel-loader",
+            },
+        },
+
+# notes for me
+npm run dev → runs webpack-dev-server with hot reload, good for development only.
+npm run build → builds optimized static assets (JS, CSS, HTML) into /dist.
+npm run start → should serve your production build with a static file server.
+
+15. Install a lightweight static server (ideal for testing prod builds locally):
+npm install --save-dev serve
+
+16. Add to your package.json scripts:
+"scripts": {
+  "dev": "webpack serve --config webpack.config.js --mode development",
+  "build": "webpack --config webpack.config.js --mode production",
+  "start": "serve -s dist"
+}
+
+17. .gitignore :
+     git rm -r --cached node_modules dist
+     node_modules
+     dist
+
+18. created a folder called server then created files for my APIs
+#for security reasons i shall not specify certain things 
+
+19. npm init -y then installed express server for securing my keys
+
+20. Configured the frontend dev server to proxy API requests to my backend during development.
+# That way, my frontend can make API calls securely without CORS issues, 
+# and the dev server forwards those requests to my Express backend.
+# The Webpack dev server automatically proxies that request to my Express backend at localhost:3001/api/weather.
+# This solves CORS and makes local dev seamless.
+
+21. This step i shall not disclose as i pertains hiding my API key so skip
+
+22. setup a .gitignore inside folder server/ that way when committing to github only commit the necessary files 
+
+23. created index.js express server entry point
+
+24. then imported:
+    # express from 'express';
+    # cors from 'cors';
+    # dotenv from 'dotenv';
+
+25. proxy option explained
+# my frontend dev server (Webpack Dev Server) runs on something like http://localhost:3000, 
+# while the backend Express server runs on http://localhost:3001.
+# When my frontend code calls /api/..., i want that request proxied to my backend server,
+# avoiding CORS issues and having a smooth dev experience.
+
+26. there was a problem, the data from the server is not being returned but the api is hidden inside express server
+# so i had to trouble shoot:
+   # the main issue — my Server/ setup is missing a dependency and possibly has a port mismatch problem.
+   # im importing fetch in visualcrossing.js, but node-fetch is not in package.json dependencies. 
+     That means my backend is probably crashing before it returns any data.
+
+   # Also, if my frontend is running on webpack-dev-server (likely localhost:8080) 
+     and my backend is running on localhost:3001, i need both CORS enabled (i already did) 
+     and to make sure the backend is actually running before the frontend fetches data.
+
+27. Install missing dependency inside Server/
+    # cd Server
+      npm install node-fetch
+
+28. Double-check your backend is actually running and returning data
+   # cd Server/
+        npm start
+   # an Error occurred: 
+      > server@1.0.0 start
+      > node index.js
+
+     node:internal/modules/package_json_reader:255
+     throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+
+  # The error im getting is because my server/index.js is importing cors, but i never installed it 
+    in the Server/ folder’s node_modules. Since each folder has its own package.json and node_modules, 
+    i need to install cors inside the Server/ folder too.
+
+29. Run this from the Server/ folder:
+    # cd Server
+      npm install cors
+    
+    # Then restart your server:
+      npm start
+
+      
+   # i have two completely separate Node.js projects:
+
+   # Frontend (inside /src) — runs in the browser, no node_modules from server. (Dev Server)
+   # Backend (inside /Server) — runs in Node.js with its own dependencies. (Express Server)
+   # This separation is actually good for API key security — but it means any package used by my server 
+     must be installed inside /Server, even if the frontend also has it.
+
+   # success:
+     npm start
+     
+     > server@1.0.0 start
+     > node index.js
+     
+     [dotenv@17.2.1] injecting env (1) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+     Inside index.js inside server folder
+     Server listening on port 3001
+
+30.  cd to main folder src/ then ran npm start 
+    # still could not see the json data from the visualcrossing api so i tried to run both servers at the same time
+    # cd src/Server/index.js :
+        npm start : port 3001 (express server)
+    # cd src/index.js:
+       npm start : port 3000 ( node server)
+
+31. solution is to install a tool to run both servers at the same time: Using concurrently
+    # npm install --save-dev concurrently
+    # problem express server was not running with dev server so:
+
+32. Install missing dependency inside Server/
+    # cd Server
+      npm install node-fetch
+
+    # cd Server
+      npm install cors
+
+33. Update package.json to run both servers together:
+    Project_Weather_App/
+          package.json:
+
+          "scripts": {
+            "dev": "concurrently \"npm run server\" \"npm run client\"",
+            "server": "cd src/server && npm start",
+            "client": "webpack serve --config webpack.config.js --mode development --port 3000",
+            "build": "webpack --mode production"
+          }
+
+34. npm run dev:
+    Both servers will be alive:
+    Frontend → http://localhost:3000
+    Backend → http://localhost:3001
+
+35. tested my api using dev tools like console.log it works 
+
+36. downloaded my assets like background-images, weather icons 
+
+37. decided to include the Geocoding API from https://myprojects.geoapify.com/projects for the search auto complete
+
+38. hide my api key to express server then Created a helper to call the Geocoding API (just like visualcrossing.js). 
+
+39. Added a new endpoint in the Express server (index.js) to use the helper function Geocoding.js
+
+40. after testing autocomplete feature  on dev tools i connected the button to display the data from api           
+
+41. created function to dynamically load the weather icons
+
+42. created function called updateWeatherUi.js this is where i will update my Ui placed it into a folder ui
+
