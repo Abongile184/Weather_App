@@ -15,6 +15,7 @@ Not all APIs are free, and depending on how they’re set up, they can cost mone
 When talking about API keys and security you’ll often hear “Never trust the client” (client meaning the frontend). Often this means not to trust that data coming from the client is valid, but it also means that you cannot trust anything we send to the client. Because of this, when you leak an API key, GitHub will alert you that you have committed an API key publicly. After following this project, and indeed exposing the API key, you may notice that GitHub will send you this alert. This is totally OK for this project as this API key is publicly available and there is no consequence for exposing it. This is not to say ALL keys are this way. Later during the backend courses you will learn ways to securely deal with these topics.
 
 Assignment:
+
 1.Set up a blank HTML document with the appropriate links to your JavaScript and CSS files.
 
 2.Write the functions that hit the API. You’re going to want functions that can take a location and return the weather data for that location. For now, just console.log() the information.
