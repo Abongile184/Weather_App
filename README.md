@@ -33,3 +33,53 @@ Assignment:
 7.Optional: add a ‘loading’ component that displays from the time the form is submitted until the information comes back from the API. Use DevTools to simulate network speeds.
 
 8.Push that baby to GitHub and share your solution below!
+
+architechture :
+project_weather_app/
+├── dist/             # Webpack build output
+│
+
+├── node_modules/ 
+├── src/                  # Source code
+│   ├── assets/           # Images, icons, fonts
+│   │             ├── icons/ 
+│   │             ├── images/ 
+│   │             ├── weather-icons/ 
+│   │
+│   ├── autocompletefeature/
+│   │                                  ├── autocomplete.js 
+│   │   
+│   ├── styles/           
+│   │   └── Tailwind.css
+│   │
+│   ├── server/           # Backend with Express
+│   │   ├── node_modules/
+│   │   ├── .env          # API keys (Visual Crossing, etc.)
+│   │   ├── .gitignore
+│   │   ├── index.js      # Express entry point
+│   │   ├── geocoding.js  # Geocoding API
+│   │   ├── visualcrossing.js # Weather API wrapper
+│   │   ├── package.json
+│   │   ├── package-lock.json
+│   │
+│   ├────utilities/
+│   │                   ├── iconMapper.js 
+│   │                   ├── unitConversion.js   
+│   │                   ├── dateFormatter.js
+│   │
+│   ├────ui/
+│   │               ├── loader.js
+│   │               ├── updateWeatherUi.js                  
+│   │
+│   ├── weatherUi.html    # Frontend HTML
+│   ├── index.js          # Frontend entry
+│
+├── .babelrc
+├── .gitignore
+├── package.json
+├── package-lock.json
+├── postcss.config.js
+├── tailwind.config.js
+└── webpack.config.js
+
+
