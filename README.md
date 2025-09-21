@@ -1,7 +1,8 @@
 # Odin Project :Weather_App
 Project Weather App
-link: https://www.theodinproject.com/lessons/node-path-javascript-weather-app#assignment
+link: https://www.theodinproject.com/lessons/node-path-javascript-weather-app
 
+#assignment:
 Introduction
 Use everything we’ve been discussing to create a weather forecast site using the Visual Crossing API from previous lessons. You should be able to search for a specific location and toggle displaying the data in Fahrenheit or Celsius.
 
