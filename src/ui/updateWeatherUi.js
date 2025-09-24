@@ -1,6 +1,6 @@
 import { cToF, fToC } from "../utilities/unitConversion";
 import { getWeatherIcon } from "../utilities/iconMapper.js";
-import { formatDateTime,  getUpcomingHours, formatDayName, formatDate } from "../utilities/dateFormatter.js";
+import { formatDateTime,  getUpcomingHours, formatDayName, formatDate, alignForecastDays } from "../utilities/dateFormatter.js";
 
 export function updateWeatherUi(data) {
   const app = document.getElementById("app");
@@ -9,6 +9,8 @@ export function updateWeatherUi(data) {
     app.innerHTML = "<p class='text-red-500'>No weather data found.</p>";
     return;
   }
+
+  data = alignForecastDays(data, data.timezone);
 
   const today = data.days[0];
   let currentUnit = "C"; // default Celsius

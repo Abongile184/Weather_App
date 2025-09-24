@@ -12,7 +12,7 @@ export function formatDateTime(dateStr, timezone) {
   return { formattedDate, formattedTime };
 }
 
-//installed luxom then  imported Datetime, this function wil allow me to retrieve hourly updates from current time now and onwards  
+//installed luxom then imported Datetime, this function wil allow me to retrieve hourly updates from current time now and onwards  
 export function getUpcomingHours(today, timezone, count = 6) {
   const now = DateTime.now().setZone(timezone);
 
@@ -40,6 +40,18 @@ export function formatDayName(datetime, timezone) {
  */
 export function formatDate(datetime, timezone) {
   const date = DateTime.fromISO(datetime, { zone: timezone });
-  return date.toFormat("MMM d"); // Example: Jul 29
+  return date.toFormat("dd LLLL yyyy");  // e.g., 22 September 2025
 }
 
+//to correctly update the date by time zone if in australia show current time and date in australia 
+export function alignForecastDays(data, timezone) {
+  const localToday = DateTime.now().setZone(timezone).startOf("day");
+  const apiFirstDay = DateTime.fromISO(data.days[0].datetime, { zone: timezone }).startOf("day");
+
+  // If API's first day is behind the local "today", drop it
+  if (apiFirstDay < localToday) {
+    data.days = data.days.slice(1);
+  }
+
+  return data;
+}

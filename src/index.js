@@ -15,6 +15,7 @@ async function getWeather(location) {
 
     const data = await res.json();
 
+
     hideLoader();
     updateWeatherUi(data);
   } catch (err) {
