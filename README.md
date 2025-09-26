@@ -2,6 +2,7 @@
 Project Weather App
 link: https://www.theodinproject.com/lessons/node-path-javascript-weather-app
 
+live view:  https://abongile184.github.io/Weather_App/
 #assignment:
 
 Introduction
