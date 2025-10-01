@@ -53,6 +53,9 @@ app.get("/api/geocode", async (req, res) => {
   }
 });
 
+console.log("VC API:", process.env.VISUAL_CROSSING_API_KEY ? "✅ Loaded" : "❌ Missing");
+console.log("Geo API:", process.env.GEOAPIFY_API_KEY ? "✅ Loaded" : "❌ Missing");
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
