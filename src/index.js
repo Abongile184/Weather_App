@@ -3,11 +3,15 @@ import { setupAutocomplete } from "./autocompletefeature/autocomplete";
 import { updateWeatherUi } from "./ui/updateWeatherUi";
 import { showLoader, hideLoader } from "./ui/loader";
 
+const isLocal =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
+
 // 🔑 Base URL: use localhost in dev, Render in production
-const API_BASE =
-  window.location.hostname === "localhost"
-    ? "http://localhost:3001"
-    : "https://weather-app-br38.onrender.com";
+const API_BASE = isLocal
+  ? "http://localhost:3001"
+  : "https://weather-app-br38.onrender.com";
+
 
 // ===== Weather API =====
 async function getWeather(location) {
