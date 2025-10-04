@@ -4,8 +4,8 @@ import dotenv from "dotenv";
 import { fetchWeather } from "./visualcrossing.js";
 import { fetchGeocoding } from "./geocoding.js";
 
-// Only load .env locally
-if (process.env.NODE_ENV !== "production") {
+// Load .env only in local dev (not on Render)
+if (process.env.RENDER !== "true") {
   dotenv.config();
 }
 
@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 
-// Weather API route
+// ===== Weather API =====
 app.get("/api/weather", async (req, res) => {
   const { location } = req.query;
   if (!location) return res.status(400).json({ error: "Location is required" });
@@ -39,7 +39,7 @@ app.get("/api/weather", async (req, res) => {
   }
 });
 
-// Geocoding route
+// ===== Geocoding API =====
 app.get("/api/geocode", async (req, res) => {
   const { query } = req.query;
   if (!query) return res.status(400).json({ error: "Query is required" });
@@ -53,9 +53,16 @@ app.get("/api/geocode", async (req, res) => {
   }
 });
 
-console.log("VC API:", process.env.VISUAL_CROSSING_API_KEY ? "✅ Loaded" : "❌ Missing");
-console.log("Geo API:", process.env.GEOAPIFY_API_KEY ? "✅ Loaded" : "❌ Missing");
+// ===== Diagnostics =====
+console.log(
+  "VC API:",
+  process.env.VISUAL_CROSSING_API_KEY ? "✅ Loaded" : "❌ Missing"
+);
+console.log(
+  "Geo API:",
+  process.env.GEOAPIFY_API_KEY ? "✅ Loaded" : "❌ Missing"
+);
 
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+  console.log(`✅ Server listening on port ${PORT}`);
 });
