@@ -12,12 +12,7 @@ if (process.env.NODE_ENV !== "production") {
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(
-  cors({
-    origin: "https://abongile184.github.io", // allow only your GH Pages frontend
-  })
-);
-
+app.use(cors());
 
 // Weather API route
 app.get("/api/weather", async (req, res) => {
